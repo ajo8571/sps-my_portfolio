@@ -12,17 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function popfunc(){
+    shown.pop()
+}
 /**
- * Adds a random greeting to the page.
+ * gets a random celebration picture.
  */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+var shown = []
+function getRandomCelebration() {
+    var imageIndex = Math.floor(Math.random() * 10) + 1;
+    if (shown.length < 11){ 
+        if (shown.includes(imageIndex)){
+            while( shown.includes(imageIndex)){
+                imageIndex = Math.floor(Math.random() * 10) + 1
+            }
+        }
+    }else{
+        shown.forEach(popfunc)
+    }
+    shown.push(imageIndex)
+    const imgUrl = 'images/f-' + imageIndex + '.jpg';
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+    const imgElement = document.createElement('img');
+    imgElement.src = imgUrl;
 
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+    const imageContainer = document.getElementById('random-image-container');
+    // Remove the previous image.
+    imageContainer.innerHTML = '';
+    imageContainer.appendChild(imgElement);
 }

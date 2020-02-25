@@ -23,10 +23,15 @@ div {
     text-align: center;
     color: white;
 }
+img{
+    width:auto;
+	max-width: 60%;
+	height:auto;
+}
 
 h2{
     border: 1px solid powderblue;
-    padding: 20px
+    padding: 20px;
     
 }
 p{
