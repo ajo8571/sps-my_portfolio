@@ -5,7 +5,9 @@
 }
 
 body{
-    background-color: burlywood
+    background-image: url("images/vqGzVS.jpg");
+    background-size: cover;
+    background-repeat: repeat;
 }
 
 #greeting-container {
@@ -13,14 +15,25 @@ body{
 }
 
 
-h1 {
-    color: brown
+h1{
+    color: brown;
 }
 
 div {
-    text-align: center
+    text-align: center;
+    color: white;
+}
+img{
+    width:auto;
+	max-width: 60%;
+	height:auto;
 }
 
-p {
-  
+h2{
+    border: 1px solid powderblue;
+    padding: 20px;
+    
+}
+p{
+
 }
