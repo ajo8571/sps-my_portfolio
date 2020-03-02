@@ -41,3 +41,29 @@ function getRandomCelebration() {
     imageContainer.innerHTML = '';
     imageContainer.appendChild(imgElement);
 }
+
+function getRandomComment() {
+  // The fetch() function returns a Promise because the request is asynchronous.
+  console.log("button pressed");
+  const responsePromise = fetch('/data');
+  // When the request is complete, pass the response into handleResponse().
+  responsePromise.then(handleResponse);
+}
+
+function handleResponse(response) {
+  // response.text() returns a Promise, because the response is a stream of
+  // content and not a simple variable.
+  const textPromise = response.text();
+
+  // When the response is converted to text, pass the result into the
+  // addQuoteToDom() function.
+  textPromise.then(addCommentToDom);
+}
+
+function addCommentToDom(comment) {
+  console.log('Adding quote to dom: ' + comment);
+
+  const quoteContainer = document.getElementById('comment');
+  quoteContainer.innerText = comment;
+  
+}
