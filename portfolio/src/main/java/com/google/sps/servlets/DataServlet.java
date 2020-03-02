@@ -14,7 +14,9 @@
 
 package com.google.sps.servlets;
 
+
 import java.io.IOException;
+import java.util.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +28,24 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("Here is a comment");
+    ArrayList<String> comments = new ArrayList<>();
+    comments.add("name");
+    comments.add("name");
+    comments.add("comment");
+    comments.add("comment");
+    response.setContentType("application/json;");
+    String json = ToJson(comments);
+    response.getWriter().println(json);
+  }
+  private String ToJson(ArrayList comments) {
+    String json = "{";
+    for (int i = 0; i < comments.size(); i+=2){
+        json += comments.get(i) + ": " + comments.get(i+1);
+        if (i+2 != comments.size()){
+            json += ", ";
+        }
+    }
+    json += "}";
+    return json; 
   }
 }

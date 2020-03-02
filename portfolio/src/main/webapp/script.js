@@ -61,7 +61,7 @@ function handleResponse(response) {
 }
 
 function addCommentToDom(comment) {
-  console.log('Adding quote to dom: ' + comment);
+  console.log('Adding comment to dom: ' + comment);
 
   const quoteContainer = document.getElementById('comment');
   quoteContainer.innerText = comment;
