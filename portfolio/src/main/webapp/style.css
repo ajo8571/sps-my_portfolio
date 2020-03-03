@@ -23,6 +23,10 @@ div {
     text-align: center;
     color: white;
 }
+.comments_div{
+    text-align: left;
+    color: white;
+}
 img{
     width:auto;
 	max-width: 60%;
@@ -34,6 +38,10 @@ h2{
     padding: 20px;
     
 }
-p{
-
+.comment-box{
+    padding: 20px 30px;
+    line-height: 28px;
+}
+label{
+    font-size: 10;
 }

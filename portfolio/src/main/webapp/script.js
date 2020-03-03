@@ -41,3 +41,45 @@ function getRandomCelebration() {
     imageContainer.innerHTML = '';
     imageContainer.appendChild(imgElement);
 }
+
+function getRandomComment() {
+  // The fetch() function returns a Promise because the request is asynchronous.
+  console.log("button pressed");
+  const responsePromise = fetch('/data');
+  // When the request is complete, pass the response into handleResponse().
+  responsePromise.then(handleResponse);
+}
+
+function handleResponse(response) {
+  // response.text() returns a Promise, because the response is a stream of
+  // content and not a simple variable.
+  const textPromise = response.text();
+
+  // When the response is converted to text, pass the result into the
+  // addQuoteToDom() function.
+  textPromise.then(addCommentToDom);
+}
+
+function addCommentToDom(comment) {
+  console.log('Adding comment to dom: ' + comment);
+  const quoteContainer = document.getElementById('comment-div');
+  quoteContainer.innerText = comment;
+  
+}
+
+function postComment() {
+  fetch("/data").then(response => response.json()).then((comments) => {
+    const comment_lst = document.getElementById('comment-list');
+    comments.forEach((line) => {
+      var string = line.title + ":\n" + line.comment+"\nby " + line.name;  
+      comment_lst.appendChild(createListElement(string));
+    });
+  });
+}
+
+/** Creates an <li> element containing text. */
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
+}
