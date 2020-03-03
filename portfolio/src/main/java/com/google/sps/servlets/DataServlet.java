@@ -25,23 +25,23 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  List<String> names = new ArrayList<>(); 
-  List<String> comments = new ArrayList<>();
-  List<String> titles = new ArrayList<>();
+  List<String> enteries = new ArrayList<>();
   static int count = 0;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    if (count >= 0){
-
-        String name = names.get(count);
-        String comment = comments.get(count);
-        String title = titles.get(count);
-        String json = convertToJson(name,title,comment);
-        count += 1;
+        String json_list = "[";
+        for(String entry : enteries){
+            json_list += entry;
+            if (count > enteries.size()){
+                json_list+=", ";
+            }
+            count += 1;
+        }
+        json_list+="]";
+        count = 0;
         response.setContentType("application/json");
-        response.getWriter().println(json);
-    }
+        response.getWriter().println(json_list);
   }
    
   
@@ -75,9 +75,8 @@ public class DataServlet extends HttpServlet {
     String name = request.getParameter("name");
     String comment = request.getParameter("comment-box");
     String title = request.getParameter("comment-title");
-    names.add(name);
-    comments.add(comment);
-    titles.add(title);
+    String json = convertToJson(name,title,comment);
+    enteries.add(json);
     response.sendRedirect("/index.html");
   }
 }

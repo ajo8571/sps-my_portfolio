@@ -68,10 +68,12 @@ function addCommentToDom(comment) {
 }
 
 function postComment() {
-  fetch("/data").then(response => response.json()).then((comment) => {
+  fetch("/data").then(response => response.json()).then((comments) => {
     const comment_lst = document.getElementById('comment-list');
-    var string = comment.title + ":\n" + comment.comment + "\nby "+ comment.name;
-    comment_lst.appendChild(createListElement(string));
+    comments.forEach((line) => {
+      var string = line.title + ":\n" + line.comment+"\nby " + line.name;  
+      comment_lst.appendChild(createListElement(string));
+    });
   });
 }
 
