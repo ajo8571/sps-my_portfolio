@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="postComment()">
     <div id="content">
       <h1>Afe's Portfolio</h1>
       <img src=/images/aa.jpg>
@@ -35,11 +35,26 @@
            <br>
            check out my <a href="https://www.linkedin.com/in/afeose-omiyi-0b105a173">linkedIn</a>
         </p> 
-        <h1> Comments<h1>
-        <p>click here to see comments<p> 
-        <button onclick = "getRandomComment()">see what people have to say!</button>
-        <div id ="comment"></div>
+        <div class= "comments_div" id ="comment-div">
+            <h3> Comments</h3> 
+            <ul id="comment-list"></ul>
+            <form action="/data" method="POST">
+            <label for="name">name:</label>  
+            <br>      
+            <input type="text" Name="name" width="50">
+            <br>
+            <label for="comment-title">Title:</label>  
+            <br>      
+            <input type="text" name="comment-title" width="50">
+            <br>
+            <label for="comment-box" >Comment:</label>
+            <br>
+            <textarea name="comment-box" rows ="5" cols ="80" placeholder="write comment"></textarea>
+            <br/><br/>
+            <input type="submit" />
+            </form>
 
+        </div>
         <div id="greeting-container">
         </div>
     </div>

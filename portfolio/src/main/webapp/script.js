@@ -62,8 +62,22 @@ function handleResponse(response) {
 
 function addCommentToDom(comment) {
   console.log('Adding comment to dom: ' + comment);
-
-  const quoteContainer = document.getElementById('comment');
+  const quoteContainer = document.getElementById('comment-div');
   quoteContainer.innerText = comment;
   
+}
+
+function postComment() {
+  fetch("/data").then(response => response.json()).then((comment) => {
+    const comment_lst = document.getElementById('comment-list');
+    var string = comment.title + ":\n" + comment.comment + "\nby "+ comment.name;
+    comment_lst.appendChild(createListElement(string));
+  });
+}
+
+/** Creates an <li> element containing text. */
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }

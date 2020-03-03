@@ -25,27 +25,59 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+  List<String> names = new ArrayList<>(); 
+  List<String> comments = new ArrayList<>();
+  List<String> titles = new ArrayList<>();
+  static int count = 0;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    ArrayList<String> comments = new ArrayList<>();
-    comments.add("name");
-    comments.add("name");
-    comments.add("comment");
-    comments.add("comment");
-    response.setContentType("application/json;");
-    String json = ToJson(comments);
-    response.getWriter().println(json);
-  }
-  private String ToJson(ArrayList comments) {
-    String json = "{";
-    for (int i = 0; i < comments.size(); i+=2){
-        json += comments.get(i) + ": " + comments.get(i+1);
-        if (i+2 != comments.size()){
-            json += ", ";
-        }
+    if (count >= 0){
+
+        String name = names.get(count);
+        String comment = comments.get(count);
+        String title = titles.get(count);
+        String json = convertToJson(name,title,comment);
+        count += 1;
+        response.setContentType("application/json");
+        response.getWriter().println(json);
     }
+  }
+   
+  
+  private String convertToJson(String name, String title, String comment) {
+    String json = "{";
+    json += "\"name\": ";
+    json += "\"" + name + "\"";
+    json += ", ";
+    json += "\"title\": ";
+    json += "\"" + title + "\"";
+    json += ", ";
+    json += "\"comment\":"; 
+    json += "\"" + comment + "\"";
     json += "}";
-    return json; 
+    return json;
+  }
+
+
+  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
+  }
+
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Get the input from the form.
+    String name = request.getParameter("name");
+    String comment = request.getParameter("comment-box");
+    String title = request.getParameter("comment-title");
+    names.add(name);
+    comments.add(comment);
+    titles.add(title);
+    response.sendRedirect("/index.html");
   }
 }
