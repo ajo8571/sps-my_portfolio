@@ -13,7 +13,14 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
-
+import com.google.sps.data.Comment;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,19 +37,24 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String json_list = "[";
-        for(String entry : enteries){
-            json_list += entry;
-            if (count > enteries.size()){
-                json_list+=", ";
-            }
-            count += 1;
+        Query query = new Query("Comment");
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+        List<Comment> comments = new ArrayList<>();
+
+        for (Entity entity : results.asIterable()) {
+            long id = entity.getKey().getId();
+            String name = (String) entity.getProperty("name");
+            String title = (String) entity.getProperty("title");
+            String comment_string = (String) entity.getProperty("comment");
+            Comment comment = new Comment(id,name,title,comment_string);
+            comments.add(comment);
         }
-        json_list+="]";
-        count = 0;
-        response.setContentType("application/json");
-        response.getWriter().println(json_list);
-  }
+
+        Gson gson = new Gson();
+        response.setContentType("application/json;");
+        response.getWriter().println(gson.toJson(comments));
+    }
    
   
   private String convertToJson(String name, String title, String comment) {
@@ -75,8 +87,16 @@ public class DataServlet extends HttpServlet {
     String name = request.getParameter("name");
     String comment = request.getParameter("comment-box");
     String title = request.getParameter("comment-title");
-    String json = convertToJson(name,title,comment);
-    enteries.add(json);
+
+    //create datastore and insert comments
+    Entity commentEntry = new Entity("Comment");
+    commentEntry.setProperty("name", name);
+    commentEntry.setProperty("comment", comment);
+    commentEntry.setProperty("title", title);
+
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();//instantiate dataclass
+    datastore.put(commentEntry);
     response.sendRedirect("/index.html");
   }
 }
