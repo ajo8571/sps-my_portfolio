@@ -68,14 +68,18 @@ function addCommentToDom(comment) {
 }
 
 function postComment() {
+  fetch("/signIn").then(response => response.json()).then((comments) => {
+    });  
   fetch("/data").then(response => response.json()).then((comments) => {
     const comment_lst = document.getElementById('comment-list');
     comments.forEach((line) => {
-      var string = line.title + ":\n" + line.comment+"\nby " + line.name;  
+      var string = line.title + ":\n" + line.comment+"\nby " + line.name+"("+line.email+")";  
       comment_lst.appendChild(createListElement(string));
     });
   });
 }
+
+
 
 /** Creates an <li> element containing text. */
 function createListElement(text) {

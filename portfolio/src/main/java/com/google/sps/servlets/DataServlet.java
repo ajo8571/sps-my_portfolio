@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -32,46 +34,32 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  List<String> enteries = new ArrayList<>();
+  
   static int count = 0;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Query query = new Query("Comment");
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        PreparedQuery results = datastore.prepare(query);
-        List<Comment> comments = new ArrayList<>();
+    
+    Query query = new Query("Comment");
+    UserService userService = UserServiceFactory.getUserService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+    List<Comment> comments = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+        long id = entity.getKey().getId();
+        String name = (String) entity.getProperty("name");
+        String title = (String) entity.getProperty("title");
+        String comment_string = (String) entity.getProperty("comment");
+        String email = (String) entity.getProperty("email");
+        Comment comment = new Comment(id,name,title,comment_string, email);
+        comments.add(comment);
+    }
 
-        for (Entity entity : results.asIterable()) {
-            long id = entity.getKey().getId();
-            String name = (String) entity.getProperty("name");
-            String title = (String) entity.getProperty("title");
-            String comment_string = (String) entity.getProperty("comment");
-            Comment comment = new Comment(id,name,title,comment_string);
-            comments.add(comment);
-        }
-
-        Gson gson = new Gson();
-        response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(comments));
+    Gson gson = new Gson();
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(comments));
     }
    
-  
-  private String convertToJson(String name, String title, String comment) {
-    String json = "{";
-    json += "\"name\": ";
-    json += "\"" + name + "\"";
-    json += ", ";
-    json += "\"title\": ";
-    json += "\"" + title + "\"";
-    json += ", ";
-    json += "\"comment\":"; 
-    json += "\"" + comment + "\"";
-    json += "}";
-    return json;
-  }
-
-
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
@@ -84,6 +72,21 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
+    UserService userService = UserServiceFactory.getUserService();
+    if (userService.isUserLoggedIn()) {
+     
+      if( userService.getCurrentUser() == null){
+          response.sendRedirect("/signIn");
+      }
+      String userEmail = userService.getCurrentUser().getEmail();
+      String urlToRedirectToAfterUserLogsOut = "/";
+      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
+
+      
+    }else {
+      response.sendRedirect("/signIn");
+    }
+    response.sendRedirect("/signIn");
     String name = request.getParameter("name");
     String comment = request.getParameter("comment-box");
     String title = request.getParameter("comment-title");
@@ -93,10 +96,8 @@ public class DataServlet extends HttpServlet {
     commentEntry.setProperty("name", name);
     commentEntry.setProperty("comment", comment);
     commentEntry.setProperty("title", title);
-
-
+    commentEntry.setProperty("email", userService.getCurrentUser().getEmail());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();//instantiate dataclass
     datastore.put(commentEntry);
-    response.sendRedirect("/index.html");
   }
 }
